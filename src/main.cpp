@@ -58,7 +58,7 @@ int main()
           
           string sensor_measurment = j[1]["sensor_measurement"];
           
-          MeasurementPackage meas_package;
+          MeasurementPackage measurement_pack;
           istringstream iss(sensor_measurment);
     	  long long timestamp;
 
@@ -67,28 +67,28 @@ int main()
     	  iss >> sensor_type;
 
     	  if (sensor_type.compare("L") == 0) {
-      	  		meas_package.sensor_type_ = MeasurementPackage::LASER;
-          		meas_package.raw_measurements_ = VectorXd(2);
+      	  		measurement_pack.sensor_type_ = MeasurementPackage::LASER;
+          		measurement_pack.raw_measurements_ = VectorXd(2);
           		float px;
       	  		float py;
           		iss >> px;
           		iss >> py;
-          		meas_package.raw_measurements_ << px, py;
+          		measurement_pack.raw_measurements_ << px, py;
           		iss >> timestamp;
-          		meas_package.timestamp_ = timestamp;
+          		measurement_pack.timestamp_ = timestamp;
           } else if (sensor_type.compare("R") == 0) {
 
-      	  		meas_package.sensor_type_ = MeasurementPackage::RADAR;
-          		meas_package.raw_measurements_ = VectorXd(3);
+      	  		measurement_pack.sensor_type_ = MeasurementPackage::RADAR;
+          		measurement_pack.raw_measurements_ = VectorXd(3);
           		float ro;
       	  		float theta;
       	  		float ro_dot;
           		iss >> ro;
           		iss >> theta;
           		iss >> ro_dot;
-          		meas_package.raw_measurements_ << ro,theta, ro_dot;
+          		measurement_pack.raw_measurements_ << ro,theta, ro_dot;
           		iss >> timestamp;
-          		meas_package.timestamp_ = timestamp;
+          		measurement_pack.timestamp_ = timestamp;
           }
           float x_gt;
     	  float y_gt;
@@ -105,17 +105,17 @@ int main()
     	  gt_values(3) = vy_gt;
     	  ground_truth.push_back(gt_values);
           
-          //Call ProcessMeasurment(meas_package) for Kalman filter
-    	  ukf.ProcessMeasurement(meas_package);    	  
+          //Call ProcessMeasurment(measurement_pack) for Kalman filter
+    	  ukf.ProcessMeasurement(measurement_pack);    	  
 
     	  //Push the current estimated x,y positon from the Kalman filter's state vector
 
     	  VectorXd estimate(4);
-
-    	  double p_x = ukf.x_(0);
-    	  double p_y = ukf.x_(1);
-    	  double v  = ukf.x_(2);
-    	  double yaw = ukf.x_(3);
+        VectorXd cur_state = ukf.GetCurrentState();
+    	  double p_x = cur_state(0);
+    	  double p_y = cur_state(1);
+    	  double v  = cur_state(2);
+    	  double yaw = cur_state(3);
 
     	  double v1 = cos(yaw)*v;
     	  double v2 = sin(yaw)*v;
@@ -186,90 +186,3 @@ int main()
   }
   h.run();
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
